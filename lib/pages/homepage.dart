@@ -1,8 +1,12 @@
 import 'package:astrum/models/event.dart';
 import 'package:astrum/widgets/eventWidget.dart';
+import 'package:astrum/widgets/nav_utils.dart';
 import 'package:astrum/widgets/postWidget.dart';
 import 'package:flutter/material.dart';
 import '../models/post.dart';
+import 'antistres_kutak.dart';
+import 'forum_studenata.dart';
+import 'oglasnik.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,18 +27,27 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               //AppBar content
               children: [
-                Image.asset(
-                  'assets/prozirno_logo.png',
-                  height: 75.0,
-                  width: 125,
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => HomePage()));
+                  },
+                  child: Image.asset(
+                    'assets/prozirno_logo.png',
+                    height: 75.0,
+                    width: 125,
+                  ),
                 ), // Logo
                 SizedBox(width: 50),
                 // Horizontal navigation
-                _navItem('NASLOVNICA'),
-                _navItem('KOLEGIJI I AKTIVNOSTI'),
-                _navItem('FORUM STUDENATA'),
-                _navItem('OGLASNIK INSTRUKCIJA'),
-                _navItem('ANTISTRES KUTAK'),
+                NavUtils.navItem(context, 'NASLOVNICA', () => HomePage()),
+                NavUtils.navItemDrop(context, 'KOLEGIJI I AKTIVNOSTI'),
+                NavUtils.navItem(
+                    context, 'FORUM STUDENATA', () => ForumStudenata()),
+                NavUtils.navItem(
+                    context, 'OGLASNIK INSTRUKCIJA', () => Oglasnik()),
+                NavUtils.navItem(
+                    context, 'ANTISTRES KUTAK', () => AntiStresKutak()),
                 Spacer(), // Pushes the icons to the right side
                 // Icons
                 IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
@@ -74,25 +87,32 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Padding(
-                              padding: EdgeInsets.fromLTRB(8, 20, 8, 8),
-                              child: Text(
-                                "GRUPE",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                              padding: EdgeInsets.fromLTRB(50, 20, 8, 8),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "GRUPE",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
                               ),
                             ),
                             SizedBox(
                               height: 10,
                             ),
-                            _buildButton("Button 1", 30, 60),
-                            _buildButton("Button 1", 30, 60),
-                            _buildButton("Button 1", 30, 60),
+                            NavUtils.buildButton("ASBP - Grupa 5", 30, 50,
+                                Colors.white, Colors.black),
+                            NavUtils.buildButton("InfoGenijalci", 30, 60,
+                                Colors.white, Colors.black),
+                            NavUtils.buildButton("OI - učenje", 30, 70,
+                                Colors.white, Colors.black),
                             SizedBox(
                               height: 20,
                             ),
-                            _buildButton("Prikazi sve", 10, 20)
+                            NavUtils.buildButton("Prikaži sve", 10, 20,
+                                Colors.white, Colors.black)
                           ]),
                     ),
                   ),
@@ -215,8 +235,9 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.fromLTRB(8, 100, 8, 0),
                   child: Column(
                     children: [
-                      _buildZadaci(),
-                      _buildCalendar("rect"),
+                      NavUtils.buildVremenskaCrta(context),
+                      NavUtils.buildCalendar(),
+                      NavUtils.buildZadaci(),
                     ],
                   ),
                 ))
@@ -246,102 +267,5 @@ class _HomePageState extends State<HomePage> {
               content: posts[index].content,
               postTime: posts[index].postTime);
         }));
-  }
-
-  Widget _navItem(String title) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: TextButton(
-        onPressed: () {},
-        child: Text(title, style: TextStyle(color: Colors.white)),
-      ),
-    );
-  }
-
-  Widget _buildButton(String text, double vert, double hori) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      child: ElevatedButton(
-        onPressed: () {},
-        child: Text(text),
-        style: ElevatedButton.styleFrom(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          padding: EdgeInsets.symmetric(vertical: vert, horizontal: hori),
-          primary: Colors.white, // Button color
-          onPrimary: Colors.black, // Text color
-          textStyle: TextStyle(fontSize: 16),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildZadaci() {
-    return Container(
-      color: Colors.blue,
-    );
-  }
-
-  Widget _buildCalendar(String text) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
-      child: Container(
-        height: 260.0, // Visina pravokutnika
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.25),
-                spreadRadius: 2,
-                blurRadius: 7,
-                offset: Offset(0, 3))
-          ],
-          color: Colors.white, // Boja pravokutnika
-          borderRadius: BorderRadius.circular(15.0), // Obli kutovi
-        ),
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(8, 20, 8, 0),
-            child: Column(
-              children: [
-                Text(
-                  "STUDENI 2023",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Divider(),
-                Container(
-                  height: 200,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 7,
-                        childAspectRatio: 1.0,
-                        crossAxisSpacing: 2.0,
-                        mainAxisSpacing: 2.0,
-                      ),
-                      itemCount: 31,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${index + 1}',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
